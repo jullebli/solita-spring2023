@@ -12,7 +12,7 @@
             <properties>
                 <exec.args>-classpath %classpath ${packageClassName}</exec.args>
                 <exec.executable>java</exec.executable>
-                <exec.workingdir>/home/bergmjul/Tyonhaku/solita-k2023/data</exec.workingdir>
+                <exec.workingdir>/home/bergmjul/Tyonhaku/solita-k2023/data/dataConverter/CSVimporter</exec.workingdir>
             </properties>
         </action>
         <action>
@@ -28,7 +28,7 @@
                 <exec.args>-agentlib:jdwp=transport=dt_socket,server=n,address=${jpda.address} -classpath %classpath ${packageClassName}</exec.args>
                 <exec.executable>java</exec.executable>
                 <jpda.listen>true</jpda.listen>
-                <exec.workingdir>/home/bergmjul/Tyonhaku/solita-k2023/data</exec.workingdir>
+                <exec.workingdir>/home/bergmjul/Tyonhaku/solita-k2023/data/dataConverter/CSVimporter</exec.workingdir>
             </properties>
         </action>
         <action>
@@ -43,7 +43,7 @@
             <properties>
                 <exec.args>-classpath %classpath ${packageClassName}</exec.args>
                 <exec.executable>java</exec.executable>
-                <exec.workingdir>/home/bergmjul/Tyonhaku/solita-k2023/data</exec.workingdir>
+                <exec.workingdir>/home/bergmjul/Tyonhaku/solita-k2023/data/dataConverter/CSVimporter</exec.workingdir>
             </properties>
         </action>
     </actions>

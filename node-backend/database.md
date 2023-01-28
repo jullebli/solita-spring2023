@@ -33,7 +33,7 @@ Only import if a record has duration >= 10 seconds and distance >= 10 meters.
 
 ## Station csv
 fields: 
--FID
+- FID
 - ID (connected to Journey csv)
 - Nimi
 - Namn
@@ -62,7 +62,7 @@ fields:
 - longitude
 - latitude
 
-## create table SQL command
+## create table SQL commands
 
 CREATE TABLE station (
 FID INT UNIQUE NOT NULL,
@@ -79,4 +79,14 @@ capacity int,
 longitude numeric,
 latitude numeric,
 PRIMARY KEY (ID)
+);
+
+CREATE TABLE journey (
+id SERIAL PRIMARY KEY,
+departure_time TIMESTAMP NOT NULL,
+return_time TIMESTAMP NOT NULL,
+departure_station_id INT,
+return_station_id INT,
+duration INT,
+distance INT
 );
