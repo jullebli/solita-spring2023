@@ -16,20 +16,21 @@ import org.apache.commons.io.input.BOMInputStream;
 public class Main {
 
     public static void main(String[] args) throws IOException, CsvException, URISyntaxException {
-        //String stationFileName = "csvFiles/Stations.csv";
-        //readFile(stationFileName, "station");
+        String stationFileName = "csvFiles/Stations.csv";
+        readFile(stationFileName, "station");
         String firstJourneyFileName = "csvFiles/2021-05.csv";
         readFile(firstJourneyFileName, "journey");
-        //String secondJourneyFileName = "csvFiles/2021-06.csv";
-        //readFile(secondJourneyFileName, "journey");
-        //String thirdJourneyFileName = "csvFiles/2021-07.csv";
-        //readFile(thirdJourneyFileName, "journey");
+        String secondJourneyFileName = "csvFiles/2021-06.csv";
+        readFile(secondJourneyFileName, "journey");
+        String thirdJourneyFileName = "csvFiles/2021-07.csv";
+        readFile(thirdJourneyFileName, "journey");
         //System.out.println("\\q");
     }
 
     public static void readFile(String fileName, String fileType) throws IOException, CsvException, URISyntaxException {
         CSVReaderHeaderAware reader = new CSVReaderHeaderAware(new InputStreamReader(
                 new BOMInputStream(new FileInputStream(fileName))));
+        System.out.println("BEGIN;");
 
         while (true) {
             StringBuilder SQLInsert = new StringBuilder("INSERT INTO ");
@@ -58,27 +59,29 @@ public class Main {
             x (longitude), 
             y (latitude)
              */
-
             if (fileType.equals("station")) {
+                if (row.get("FID").isEmpty() || row.get("ID").isEmpty()) {
+                    continue;
+                }
                 SQLInsert.append(row.get("FID"));
                 SQLInsert.append(", ");
                 SQLInsert.append(row.get("ID"));
                 SQLInsert.append(", '");
-                SQLInsert.append(row.get("Nimi"));
+                SQLInsert.append(row.get("Nimi").replace("'", "''"));
                 SQLInsert.append("', '");
-                SQLInsert.append(row.get("Namn"));
+                SQLInsert.append(row.get("Namn").replace("'", "''"));
                 SQLInsert.append("', '");
-                SQLInsert.append(row.get("Name"));
+                SQLInsert.append(row.get("Name").replace("'", "''"));
                 SQLInsert.append("', '");
-                SQLInsert.append(row.get("Osoite"));
+                SQLInsert.append(row.get("Osoite").replace("'", "''"));
                 SQLInsert.append("', '");
-                SQLInsert.append(row.get("Adress"));
+                SQLInsert.append(row.get("Adress").replace("'", "''"));
                 SQLInsert.append("', '");
-                SQLInsert.append(row.get("Kaupunki"));
+                SQLInsert.append(row.get("Kaupunki").replace("'", "''"));
                 SQLInsert.append("', '");
-                SQLInsert.append(row.get("Stad"));
+                SQLInsert.append(row.get("Stad").replace("'", "''"));
                 SQLInsert.append("', '");
-                SQLInsert.append(row.get("Operaattor"));
+                SQLInsert.append(row.get("Operaattor").replace("'", "''"));
                 SQLInsert.append("', ");
                 SQLInsert.append(row.get("Kapasiteet"));
                 SQLInsert.append(", ");
@@ -89,13 +92,22 @@ public class Main {
 
                 System.out.println(SQLInsert);
             } else if (fileType.equals("journey")) {
-                if (Integer.parseInt(row.get("Duration (sec.)")) >= 10
-                        && Integer.parseInt(row.get("Covered distance (m)")) >= 10) {
+                String duration = row.get("Duration (sec.)");
+                String distance = row.get("Covered distance (m)");
+                String departure_time = row.get("Departure").replace("T", " ");
+                String return_time = row.get("Return").replace("T", " ");
+
+                if (duration.isEmpty() || distance.isEmpty()
+                        || departure_time.isEmpty() || return_time.isEmpty()) {
+                    continue;
+                }
+                if (Double.valueOf(duration) >= 10
+                        && Double.valueOf(distance) >= 10) {
 
                     SQLInsert.append("'");
-                    SQLInsert.append(row.get("Departure").replace("T", " "));
+                    SQLInsert.append(departure_time.replace("T", " "));
                     SQLInsert.append("', '");
-                    SQLInsert.append(row.get("Return").replace("T", " "));
+                    SQLInsert.append(return_time.replace("T", " "));
                     SQLInsert.append("', ");
                     SQLInsert.append(row.get("Departure station id"));
                     SQLInsert.append(", ");
@@ -105,14 +117,15 @@ public class Main {
                     SQLInsert.append(", ");
                     //SQLInsert.append(row.get("Return station name"));
                     //SQLInsert.append("', ");
-                    SQLInsert.append(row.get("Covered distance (m)"));
+                    SQLInsert.append(distance);
                     SQLInsert.append(", ");
-                    SQLInsert.append(row.get("Duration (sec.)"));
+                    SQLInsert.append(duration);
                     SQLInsert.append("); ");
                     System.out.println(SQLInsert);
                 }
             }
         }
+        System.out.println("COMMIT;");
         reader.close();
     }
 }
