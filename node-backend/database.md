@@ -7,6 +7,7 @@
 - Don't import journeys that covered distances shorter than 10 meters
 
 ## Journey csv
+
 fields:
 - Departure
 - Return
@@ -32,20 +33,23 @@ Only import if a record has duration >= 10 seconds and distance >= 10 meters.
 - distance (at least 10 meters)
 
 ## Station csv
+
+information also on https://public-transport-hslhrt.opendata.arcgis.com/datasets/HSLHRT::helsingin-ja-espoon-kaupunkipy%C3%B6r%C3%A4asemat-avoin/about
+
 fields: 
 - FID
-- ID (connected to Journey csv)
-- Nimi
-- Namn
-- Name
-- Osoite
-- Adress (Swedish address actually)
-- Kaupunki
-- Stad
-- Operaattor
-- Kapasiteet
-- x (longitude)
-- y (latitude)
+- ID, (connected to Journey csv), type:Text
+- Nimi, type: Text
+- Namn, type: Text
+- Name, type: Text
+- Osoite, type: Text
+- Adress, (Swedish address actually) type: Text
+- Kaupunki, type: Text
+- Stad, type: Text
+- Operaattor, type: Text
+- Kapasiteet, type: Number
+- x (longitude), type: Number
+- y (latitude), type: Number
 
 ## station table fields
 - FID
@@ -58,26 +62,28 @@ fields:
 - city
 - city_SWE
 - operator
-- capasity
+- capacity
 - longitude
 - latitude
+
+same types as in the csv (all text except last three and FID are Numberic)
 
 ## create table SQL commands
 
 CREATE TABLE station (
-FID INT UNIQUE NOT NULL,
-ID INT UNIQUE NOT NULL,
-name text,
-name_FI text,
-name_SWE text,
-address text,
-address_SWE text,
-city text,
-city_SWE text,
-operator text,
-capacity int,
-longitude numeric,
-latitude numeric,
+FID Numeric UNIQUE NOT NULL,
+ID Text UNIQUE NOT NULL,
+name Text,
+name_FI Text,
+name_SWE Text,
+address Text,
+address_SWE Text,
+city Text,
+city_SWE Text,
+operator Text,
+capacity Numeric,
+longitude Numeric,
+latitude Numeric,
 PRIMARY KEY (ID)
 );
 
@@ -85,8 +91,8 @@ CREATE TABLE journey (
 id SERIAL PRIMARY KEY,
 departure_time TIMESTAMP NOT NULL,
 return_time TIMESTAMP NOT NULL,
-departure_station_id INT,
-return_station_id INT,
-duration INT,
-distance INT
+departure_station_id Text,
+return_station_id Text,
+duration Numeric,
+distance Numeric
 );

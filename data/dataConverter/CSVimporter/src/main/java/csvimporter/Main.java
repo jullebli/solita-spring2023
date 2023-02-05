@@ -6,7 +6,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URISyntaxException;
-import java.text.SimpleDateFormat;
 import java.util.Map;
 import org.apache.commons.io.input.BOMInputStream;
 
@@ -17,25 +16,17 @@ import org.apache.commons.io.input.BOMInputStream;
 public class Main {
 
     public static void main(String[] args) throws IOException, CsvException, URISyntaxException {
-        String stationFileName = "csvFiles/testStations.csv";
-        readFile(stationFileName, "station");
-        String firstJourneyFileName = "csvFiles/testJourneys.csv";
+        //String stationFileName = "csvFiles/Stations.csv";
+        //readFile(stationFileName, "station");
+        String firstJourneyFileName = "csvFiles/2021-05.csv";
         readFile(firstJourneyFileName, "journey");
+        //String secondJourneyFileName = "csvFiles/2021-06.csv";
+        //readFile(secondJourneyFileName, "journey");
+        //String thirdJourneyFileName = "csvFiles/2021-07.csv";
+        //readFile(thirdJourneyFileName, "journey");
+        //System.out.println("\\q");
     }
 
-    /*
-    public static List<String[]> readFile(String fileName) throws IOException, CsvException {
-        List<String[]> list = new ArrayList<>();
-        try ( CSVReader reader = new CSVReader(new FileReader(fileName))) {
-            list = reader.readAll();
-            list.forEach(x -> System.out.println(Arrays.toString(x)));
-        } catch (Error e) {
-            System.out.println("There has been an error: " + e);
-        }
-        
-        return list;
-    } 
-     */
     public static void readFile(String fileName, String fileType) throws IOException, CsvException, URISyntaxException {
         CSVReaderHeaderAware reader = new CSVReaderHeaderAware(new InputStreamReader(
                 new BOMInputStream(new FileInputStream(fileName))));
@@ -67,28 +58,11 @@ public class Main {
             x (longitude), 
             y (latitude)
              */
- /*
-            //System.out.println(row.values());
-            //System.out.println(row.keySet());
-            for (Object value : row.values()) {
 
-                System.out.println("value = " + value);
-                System.out.println("class = " + value.getClass());
-                for (Object key : row.keySet()) {
-                    if (row.get(key).equals(value.toString())) {
-                        System.out.println("key = " + key);
-                        System.out.println("key class = " + key.getClass());
-                        System.out.println("");
-                    }
-                    
-                }
-            }
-             */
             if (fileType.equals("station")) {
                 SQLInsert.append(row.get("FID"));
                 SQLInsert.append(", ");
                 SQLInsert.append(row.get("ID"));
-                //System.out.println(SQLInsert);
                 SQLInsert.append(", '");
                 SQLInsert.append(row.get("Nimi"));
                 SQLInsert.append("', '");
@@ -115,15 +89,9 @@ public class Main {
 
                 System.out.println(SQLInsert);
             } else if (fileType.equals("journey")) {
-                //System.out.println("was journey type");
-                //System.out.println("row = " + row);
                 if (Integer.parseInt(row.get("Duration (sec.)")) >= 10
-                        || Integer.parseInt(row.get("Covered distance (m)")) >= 10) {
-                    //need to think if names are necessary. Could be join table with id
-                    //System.out.println("was long enough and lasted long enough");
-                    
-                    
-                    //SimpleDateFormat df = new SimpleDateFormat("yyyy-mm-dd HH:mm:ss");
+                        && Integer.parseInt(row.get("Covered distance (m)")) >= 10) {
+
                     SQLInsert.append("'");
                     SQLInsert.append(row.get("Departure").replace("T", " "));
                     SQLInsert.append("', '");
@@ -142,34 +110,9 @@ public class Main {
                     SQLInsert.append(row.get("Duration (sec.)"));
                     SQLInsert.append("); ");
                     System.out.println(SQLInsert);
-                    //System.out.println("");
                 }
             }
-
-            /*
-            for (String value : row.values()) {
-                System.out.println(value);
-            }
-             */
         }
-
         reader.close();
-
-        /*
-        CSVParser parser = new CSVParserBuilder()
-                .withSeparator(',')
-                .withIgnoreQuotations(true)
-                .build();
-        
-        Path path = Paths.get(ClassLoader.getSystemResource("data/Stations.csv").toURI());
-        CSVReader CSVreader = new CSVReaderBuilder(Files.newBufferedReader(path))
-                .withSkipLines(1)
-                .withCSVParser(parser)
-                .build();
-        
-        for (String[] nextLine : CSVreader.readAll()) {
-            Arrays.toString(nextLine);
-        }
-         */
     }
 }
